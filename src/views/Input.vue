@@ -1,12 +1,18 @@
 <template>
-  <div class="container">
+  <div class="content">
     <div class="input-area">
+      <router-link to="graph">結果画面へ</router-link>
       <div class="input-area__time">
         <label for="studyTime">勉強時間: </label>
         <input id="studyTime" v-model="studyTime" type="tel" />時間
       </div>
+      <!-- 仮 -->
+      <div class="input-area__area">
+        <label for="studyArea">勉強場所: </label>
+        <input id="studyArea" v-model="studyArea" type="text" />
+      </div>
       <div class="input-area__density">
-        <label for="studyDensity">勉強密度: </label>
+        <label for="studyDensity">集中度: </label>
         <select id="studyDensity" v-model="studyDensity">
           <option value="薄">薄</option>
           <option value="普">普</option>
@@ -17,15 +23,13 @@
         <label for="studyContent">勉強内容: </label>
         <textarea id="studyContent" v-model="studyContent" placeholder="任意" />
       </div>
+      <button @click="submitStudy" class="input-area_submit">
+        投稿する
+      </button>
+      <button @click="getLocation" class="input-area_location">
+        現在地を取得
+      </button>
     </div>
-    <button @click="submitStudy">投稿する</button>
-    <button @click="getLocation">現在地を取得</button>
-    <ul v-for="post in posts" :key="post">
-      <li>{{ post.fields.studyTime.stringValue }}</li>
-      <li>{{ post.fields.studyDensity.stringValue }}</li>
-      <li>{{ post.fields.studyContent.stringValue }}</li>
-      <li>{{ post.fields.nowTime.stringValue }}</li>
-    </ul>
   </div>
 </template>
 
@@ -38,9 +42,9 @@ export default {
       studyTime: "", // 時間
       studyDensity: "", // 密度
       studyContent: "", // 内容
+      studyArea: "", // 場所
       latitude: 0,
-      longitude: 0,
-      posts: []
+      longitude: 0
     };
   },
   computed: {
@@ -54,13 +58,6 @@ export default {
       return `${year}年${mon}月${day}日${hour}時${min}分`;
     }
   },
-  created() {
-    axios.get("/posts").then(response => {
-      console.log(response);
-      this.posts = response.data.documents;
-      })
-      .catch(alert("エラーが出ています"));
-  },
   methods: {
     submitStudy() {
       axios
@@ -68,6 +65,9 @@ export default {
           fields: {
             studyTime: {
               stringValue: this.studyTime
+            },
+            studyArea: {
+              stringValue: this.studyArea
             },
             studyDensity: {
               stringValue: this.studyDensity
@@ -90,6 +90,7 @@ export default {
           this.latitude = 0;
           this.longitude = 0;
           this.studyTime = "";
+          this.studyArea = "";
           this.studyDensity = "";
           this.studyContent = "";
         })
@@ -122,7 +123,6 @@ export default {
     //   );
     // },
     // success(position) {
-    //   console.log(position);
     //   this.latitude = position.coords.latitude;
     //   this.longitude = position.coords.longitude;
     // },
@@ -143,14 +143,33 @@ export default {
     //   }
     // }
   }
-}
+};
 </script>
 
 <style lang="scss" scoped>
+.content {
+  max-width: 1070px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+label {
+  margin: 0 10px 0 0;
+}
 .input-area {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  align-items: center;
+  align-items: flex-start;
+
+  &__time,
+  &__density {
+    margin-bottom: 20px;
+    vertical-align: bottom;
+  }
+
+  &__content {
+    margin-bottom: 30px;
+  }
 }
 </style>
