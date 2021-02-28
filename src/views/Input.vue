@@ -1,7 +1,7 @@
 <template>
   <div class="content">
     <div class="input-area">
-      <router-link to="graph">結果画面へ</router-link>
+      <router-link to="graph" class="graph-link">結果画面へ</router-link>
       <div class="input-area__time">
         <label for="studyTime">勉強時間: </label>
         <input id="studyTime" v-model="studyTime" type="tel" />時間
@@ -64,7 +64,7 @@ export default {
         .post("/posts", {
           fields: {
             studyTime: {
-              stringValue: this.studyTime
+              integerValue: this.studyTime
             },
             studyArea: {
               stringValue: this.studyArea
@@ -152,6 +152,9 @@ export default {
   margin: 0 auto;
   display: grid;
   grid-template-columns: 1fr 1fr;
+}
+.grahp-link {
+  color: cadetblue;
 }
 label {
   margin: 0 10px 0 0;
